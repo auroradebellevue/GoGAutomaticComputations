@@ -1,0 +1,14 @@
+#graph of groups structure example
+#distinguish new rows by /n and new columns by &
+#For i and j distinct, the entry in the ith row and jth column is the list of 
+#subgroup files which have an edge from vertex i to j. The isomorphism between 
+#the subgroups is described by sending the generators of the first half of the list
+#to the generators of the second half of the list. In this example, the map from the
+#subgroup assigned to the edge oriented from vertex 1 to vertex 2 to the subgroup
+#assigned to the edge oriented from vertex 2 to vertex 1 is defined by mapping the
+#generators c goes to a, C goes to A, etc. 
+#For i=j, the entry in the ith row and ith column is the list whose first entry is 
+#the rewriting system for the vertex group, then the subgroup files which have an 
+#edge from vertex i to i.
+v1gp-Z2 & v2gp-Z.sub, cCdDaAbB  
+v1gp-Z.sub, aAbBcCdD & v2gp-Z2

@@ -1,0 +1,11 @@
+# Z2 hnn over Z with map a to b
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [b,B,a,A,t,T],
+  inverses := [B,b,A,a,T,t],
+  equations := [
+    [b*a,a*b],
+    [t*a,b*t]
+  ]
+);
