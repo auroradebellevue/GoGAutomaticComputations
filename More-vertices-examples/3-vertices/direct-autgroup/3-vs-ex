@@ -1,0 +1,15 @@
+# GOG with 3 vs and 3 edges
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [a,A,b,B,c,C,d,D,g,G,h,H,t2,T2],
+  inverses := [A,a,B,b,C,c, D, d, G,g,H,h,T2,t2],
+  equations := [
+    [b*a,a*b],
+    [c*d,d*c],
+    [g*h,h*g],
+    [c,a],
+    [t2*c,c*t2],
+    [d,g]
+  ]
+);

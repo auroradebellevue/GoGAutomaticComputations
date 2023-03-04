@@ -4,10 +4,10 @@
 Created on Tue Oct 13 11:49:45 2020
 
 @author: aurora
-THESE FUNCTIONS NEED TO BE REPURPOSED FOR NEW ORGANIZATION NOW THAT GRAPH.TXT
-WILL BE USED TO STORE THE VERTEX GROUPS, EDGE GROUPS, AND GRAPH INFO (
-WITH NAMES IN THE GRAPH.TXT FILE)
-This file runs kbmag on each rws ans sub rws in a folder. 
+
+This script contains functions which run kbmag on each rws ans sub rws in a 
+particular directory. This script additionally contains functions to aid 
+processing the input files.  
 
 """
 
@@ -16,42 +16,16 @@ This file runs kbmag on each rws ans sub rws in a folder.
 
 import subprocess
 import os
-import sys
 
 ##############################################################################
 # global variables
-kbmag_std_al_dir="/home/aurora/gap-4.11.0/pkg/kbmag-1.5.9/standalone/"
-kbmag_ftn_dir="/home/aurora/gap-4.11.0/pkg/kbmag-1.5.9/standalone/bin/x86_64-pc-linux-gnu-default64-kv7/"
+#kbmag_ftn_dir="/home/aurora/gap-4.11.1/pkg/kbmag-1.5.9/standalone/bin/"
 
 #diry=sys.argv 
 dir_path = os.path.dirname(os.path.realpath(__file__)) 
 
 #############################################################################
 # 
-def OLD_find_files(diry):
-    """
-    assign the directory to diry and find vertex group files and edge group files
-    then assign these file names to different lists
-
-    Parameters
-    ----------
-    diry : TYPE
-        DESCRIPTION.
-
-    Returns
-    -------
-    A list with 2 entries. The first entry is the list of vertex group files. 
-    The second entry is the list of edge group files. 
-
-    """
-    #s=subprocess.check_output(["find", diry, "-type", "f","-name", "*.sub"])
-    #print(s)
-    voutput=subprocess.check_output(["find", diry, "-name", "vgp\\*"])
-    eoutput=subprocess.check_output(["find", diry, "-type", "f","-name", "*.sub"])
-    return [voutput, eoutput]
-
-
-
 def find_files(dir_path, pattern, flag):
     """
     Parameters
@@ -81,14 +55,80 @@ def find_files(dir_path, pattern, flag):
         file_list.append("Failed to find file!")        
     return file_list 
 
+def basic_processing(file_object, flag):
+    """
+    Parameters
+    ----------
+    file_object : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    The lines of the file as a list of strings. Empty lines and commented lines
+    have been deleted.
+
+    """
+    file_lines=open(file_object[0], 'r')
+    #read the file in and split by row
+    file_lines=file_lines.read().split('\n')
+    #remove the lines of the header which start with #
+    file_lines=list(filter(lambda x: (x.startswith('#') == False), file_lines))
+    #remove empty lines
+    file_lines=list(filter(lambda x: (x != ""), file_lines))
+    if flag=='files':
+        for i in range(len(file_lines)):
+            file_lines[i]=file_lines[i].split('&')
+    return file_lines
+
+def get_graph_and_tree(graph_info):
+    """
+    This function takes the graph information as a list of strings. Each entry
+    of the list represents a row of the adjacency matrix. 
+
+    Parameters
+    ----------
+    graph_info : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    An adjacency matrix as a list of lists. 
+
+    """
+    for i in range(len(graph_info)-1):
+        #split by a space which marks the different columns for the same row
+        graph_info[i]=graph_info[i].split(' ')
+        #print(graph_info[i])
+        for j in range(len(graph_info[i])):
+            graph_info[i][j]=int(graph_info[i][j])
+    if graph_info[-1]=="No tree":
+        tree=[]
+    else:
+        temp=graph_info[-1].replace(" ", "")
+        tree=temp.split(',')
+    return graph_info[:-1], tree
+   
 #############################################################################
 # run autgroup on a files. note that the subgroup name must be the same as the 
 # group name
-def run_auts(gplist):
-    for file in gplist[0]:
-        subprocess.run([kbmag_ftn_dir+"autgroup", file])
-    for file in gplist[0]:
-        subprocess.run([kbmag_ftn_dir+"autcos", file])
+def run_auts(gog, vfiles, efiles, init_term_vs, file_dir, kbmag_ftn_dir):
+    
+    for v in gog.vertices:
+        subprocess.run([kbmag_ftn_dir+"autgroup", file_dir+v.group.file["vx"]])
+        #TODO: run autgroup on the other orderings
+    for e in gog.edges:
+        #forward oriented subgroup
+        print('\n', "Running autgroup then autcos on", file_dir + e.fg.supergp_file,'\n')
+        subprocess.run([kbmag_ftn_dir+"autgroup", file_dir+e.fg.supergp_file])
+        subprocess.run([kbmag_ftn_dir+"autcos", file_dir+e.fg.supergp_file])
+        #reverse oriented subgroup
+        print('\n', "Running autgroup then autcos on", file_dir + e.rg.supergp_file, '\n')
+        subprocess.run([kbmag_ftn_dir+"autgroup", file_dir+e.rg.supergp_file])
+        subprocess.run([kbmag_ftn_dir+"autcos", file_dir+e.rg.supergp_file])
+    #run autgroup on the subgroup of the base vertex
+    e0gp=gog.vertices[0].subgp
+    print('\n', "Running autgroup ", file_dir, e0gp, '\n')
+    subprocess.run([kbmag_ftn_dir+"autgroup", file_dir+e0gp])
 
 ##############################################################################
 # testing ground
@@ -98,4 +138,6 @@ def run_auts(gplist):
 #s=subprocess.check_output(["find", "/home/aurora/Documents/PythonGroupTheory", "-type", "f","-name", "*.sub"])
 #t=subprocess.check_output(["find", "/home/aurora/Documents/PythonGroupTheory", "-name", "vgp*"])
 #print(s)
-#print(t)
+#print(t) 
+
+

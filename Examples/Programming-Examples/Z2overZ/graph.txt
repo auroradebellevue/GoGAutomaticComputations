@@ -1,7 +1,0 @@
-#graph of groups structure example
-#For i and j distinct, the entry in the ith row and jth column is the list of 
-#subgroup files which have an edge from vertex i to j 
-#For i=j, the entry in the ith row and ith column is the list whose first entry is 
-#the rewriting system for the vertex group, then the subgroup files which have an 
-#edge from vertex i to i.
-[[vgp-Z2, [vgp-Z2.sub, mapfile]]]

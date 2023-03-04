@@ -1,0 +1,5 @@
+# Zmod6 gen by C
+_RWS_Sub := rec(
+  subGenerators:=[C],
+  subGeneratorNames:=[x]
+);

@@ -1,0 +1,29 @@
+_RWS_concat_concat_or_or := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "identifiers",
+                size := 18,
+              format := "dense",
+               names := [a,A,b,B,c,C,d,D,g,G,h,H,t1,T1,t2,T2,t0,T0]
+               ),
+          states := rec(
+                type := "simple",
+                size := 8
+               ),
+           flags := ["DFA","minimized","BFS","accessible","trim"],
+         initial := [1],
+       accepting := [8],
+           table := rec(
+              format := "dense deterministic",
+      numTransitions := 144,
+         transitions := [[1,1,1,1,1,1,1,1,1,1,1,1,2,3,4,5,6,7],
+                         [1,1,1,1,1,1,1,1,1,1,1,1,2,8,4,5,6,7],
+                         [1,1,1,1,1,1,1,1,1,1,1,1,8,3,4,5,6,7],
+                         [1,1,1,1,1,1,1,1,1,1,1,1,2,3,4,8,6,7],
+                         [1,1,1,1,1,1,1,1,1,1,1,1,2,3,8,5,6,7],
+                         [1,1,1,1,1,1,1,1,1,1,1,1,2,3,4,5,6,8],
+                         [1,1,1,1,1,1,1,1,1,1,1,1,2,3,4,5,8,7],
+                         [8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8] 
+                        ]
+               )
+);

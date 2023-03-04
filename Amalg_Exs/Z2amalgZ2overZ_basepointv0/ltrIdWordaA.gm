@@ -1,0 +1,36 @@
+_RWS.wa := rec(
+        isFSA := true,
+        alphabet := rec(
+                type := "product", 
+                size := 24,
+                arity := 2,
+                padding := _,
+                base := rec( 
+                type := "identifiers",
+                size := 4, 
+                format := "dense",
+                names := [a,A,b,B]
+                ) 
+                ),
+        states := rec(
+        type :="labeled", 
+        size :=5,
+        labels := rec( 
+        type := "list of words",
+        size := 5,
+        alphabet := [a,A,b,B],
+        format := "sparse", 
+        names:= [[1,[IdWordaA]] 
+ ] 
+ ), 
+        format := "sparse", 
+        setToLabels := [[1, 1], [2, 1], [4, 1]] 
+ ), 
+        flags := ["DFA"],
+        initial := [1],
+        accepting := [1, 2, 4],
+        table := rec(
+        format := "dense deterministic",
+        numTransitions := 12,
+        transitions := [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3, 0, 0, 0, 4, 5, 0, 0, 5, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 5, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 0, 0, 0, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+);

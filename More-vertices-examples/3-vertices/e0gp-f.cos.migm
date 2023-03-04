@@ -1,0 +1,65 @@
+_RWS_Cos.migm := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "product",
+                size := 24,
+               arity := 2,
+             padding := _,
+                base := rec(
+                    type := "identifiers",
+                    size := 4,
+                  format := "dense",
+                   names := [c,C,d,D]
+                   ) 
+               ),
+          states := rec(
+                type := "labeled",
+                size := 11,
+              labels := rec(
+                    type := "list of words",
+                    size := 5,
+                alphabet := [c,C,d,D],
+                  format := "sparse",
+                   names := [
+                    [1,[IdWord]],
+                    [2,[D]],
+                    [3,[d]],
+                    [4,[C]],
+                    [5,[c]]
+                  ]
+                   ),
+              format := "sparse",
+         setToLabels := [
+                         [1,1],
+                         [2,2],
+                         [3,3],
+                         [4,1],
+                         [5,4],
+                         [6,1],
+                         [7,5],
+                         [8,2],
+                         [9,2],
+                         [10,3],
+                         [11,3]
+                        ]
+               ),
+           flags := ["MIDFA","accessible"],
+         initial := [1,2,3],
+       accepting := [1..11],
+           table := rec(
+              format := "sparse",
+      numTransitions := 20,
+         transitions := [[[1,4],[5,5],[7,6],[10,7],[21,7],[22,5]],
+                         [[1,8],[7,9]],
+                         [[1,10],[7,11]],
+                         [[1,4],[5,5],[21,7]],
+                         [],
+                         [[7,6],[10,7],[22,5]],
+                         [],
+                         [[1,8]],
+                         [[7,9]],
+                         [[1,10]],
+                         [[7,11]] 
+                        ]
+               )
+);

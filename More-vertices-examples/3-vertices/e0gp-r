@@ -1,0 +1,10 @@
+# Z2 gen by g, h with g first
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [g, G, h, H],
+  inverses := [G, g, H, h],
+  equations := [
+  [h*g, g*h ]
+  ]
+);

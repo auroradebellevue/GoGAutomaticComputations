@@ -1,3 +1,0 @@
-#The matrix gives direction adjacency information of the graph. The number in
-#row i and column j represents the number of edges from vertex i to vertex j. 
-1

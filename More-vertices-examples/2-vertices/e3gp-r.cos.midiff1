@@ -1,0 +1,50 @@
+_RWS_Cos.midiff1 := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "product",
+                size := 24,
+               arity := 2,
+             padding := _,
+                base := rec(
+                    type := "identifiers",
+                    size := 4,
+                  format := "dense",
+                   names := [c,C,d,D]
+                   ) 
+               ),
+          states := rec(
+                type := "words",
+                size := 9,
+            alphabet := [c,C,d,D],
+              format := "sparse",
+               names := [
+                [1,IdWord],
+                [2,C],
+                [3,c],
+                [4,D],
+                [5,d],
+                [6,c*D],
+                [7,c*d],
+                [8,C*D],
+                [9,C*d]
+              ]
+               ),
+           flags := ["MIDFA","trim"],
+         initial := [1,4,5],
+       accepting := [1],
+           table := rec(
+              format := "sparse",
+      numTransitions := 20,
+         transitions := [[[5,2],[10,3],[11,6],[12,8],[15,4],[16,7],[17,9],
+                          [20,5]],
+                         [[10,1]],
+                         [[5,1]],
+                         [[1,4],[7,4],[20,1]],
+                         [[1,5],[7,5],[15,1]],
+                         [[3,1]],
+                         [[4,1]],
+                         [[8,1]],
+                         [[9,1]] 
+                        ]
+               )
+);

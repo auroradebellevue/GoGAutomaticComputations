@@ -1,0 +1,32 @@
+_RWS_concat_andnot := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "identifiers",
+                size := 10,
+              format := "dense",
+               names := [a,A,b,B,c,C,d,D,t0,T0]
+               ),
+          states := rec(
+                type := "simple",
+                size := 11
+               ),
+           flags := ["DFA","minimized","BFS","accessible","trim"],
+         initial := [1],
+       accepting := [1,2,3,4,5,8,9,10,11],
+           table := rec(
+              format := "dense deterministic",
+      numTransitions := 33,
+         transitions := [[0,0,0,0,2,3,4,5,0,6],
+                         [0,0,0,0,2,0,4,5,7,6],
+                         [0,0,0,0,0,3,4,5,7,6],
+                         [0,0,0,0,0,0,4,0,7,6],
+                         [0,0,0,0,0,0,0,5,7,6],
+                         [0,0,0,0,0,0,8,9,0,0],
+                         [0,0,10,11,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,8,0,7,0],
+                         [0,0,0,0,0,0,0,9,7,0],
+                         [0,0,10,0,0,0,0,0,0,6],
+                         [0,0,0,11,0,0,0,0,0,6] 
+                        ]
+               )
+);

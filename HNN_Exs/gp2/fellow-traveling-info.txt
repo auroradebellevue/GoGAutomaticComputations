@@ -1,0 +1,7 @@
+#fellow-traveling-info.txt
+#k2 is constant for Ge
+#2
+#K is the max fellow traveller constant for (G_v, G_e) and (G_v, G_rev{e})
+#1
+#fellow traveling constant for the whole thing
+3
