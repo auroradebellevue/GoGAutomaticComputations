@@ -1,0 +1,9 @@
+# Z gen by a
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [a, A],
+  inverses := [A, a],
+  equations := [
+  ]
+);

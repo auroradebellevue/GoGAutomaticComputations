@@ -1,0 +1,5 @@
+#The matrix gives the directed edge information.
+# The number in row i and column j represents the number of edges from vertex
+# i to vertex j. 
+2
+No tree

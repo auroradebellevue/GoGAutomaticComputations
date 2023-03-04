@@ -1,0 +1,5 @@
+# Z2 gen by a, b
+_RWS_Sub := rec(
+  subGenerators:=[a, b],
+  subGeneratorNames:=[x1, x2]
+);

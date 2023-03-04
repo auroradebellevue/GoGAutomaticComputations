@@ -1,0 +1,13 @@
+# Z2 multiple hnn over Z then Z
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [a, A, b, B, t0, T0, t1, T1],
+  inverses := [A, a, B, b, t0, T0, t1, T1],
+  equations := [
+  [b*a, a*b ],
+  [t0*a*T0, b],
+  [t1*a*T1, b]
+  ]
+
+);

@@ -1,0 +1,12 @@
+# Z2 amalag Z2 over Z with map c to a
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [a,A,b,B,c,C, d, D],
+  inverses := [A,a,B,b,C,c, D, d],
+  equations := [
+    [b*a,a*b],
+    [c*d,d*c],
+    [c,a]
+  ]
+);

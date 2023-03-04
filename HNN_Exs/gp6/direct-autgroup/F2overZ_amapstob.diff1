@@ -1,0 +1,54 @@
+_RWS.diff1 := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "product",
+                size := 48,
+               arity := 2,
+             padding := _,
+                base := rec(
+                    type := "identifiers",
+                    size := 6,
+                  format := "dense",
+                   names := [b,B,a,A,t,T]
+                   ) 
+               ),
+          states := rec(
+                type := "words",
+                size := 11,
+            alphabet := [b,B,a,A,t,T],
+              format := "sparse",
+               names := [
+                [1,IdWord],
+                [2,B],
+                [3,b],
+                [4,A],
+                [5,a],
+                [6,T],
+                [7,t],
+                [8,a*T],
+                [9,b*t],
+                [10,A*T],
+                [11,B*t]
+              ]
+               ),
+           flags := ["DFA","trim"],
+         initial := [1],
+       accepting := [1],
+           table := rec(
+              format := "sparse",
+      numTransitions := 20,
+         transitions := [[[7,2],[14,3],[21,4],[28,5],[29,8],[30,10],[35,6],
+                          [38,9],[39,11],[42,7]],
+                         [[14,1]],
+                         [[7,1]],
+                         [[28,1]],
+                         [[21,1]],
+                         [[42,1]],
+                         [[35,1]],
+                         [[19,1]],
+                         [[6,1]],
+                         [[26,1]],
+                         [[13,1]] 
+                        ]
+               )
+);

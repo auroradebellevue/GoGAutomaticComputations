@@ -1,0 +1,7 @@
+gp1 is Z2 HNN over Z
+gp2 is Z2 HNN over Z2
+gp3 is Zmod4 HNN over Zmod4
+gp4 is Zmod4 x Zmod4 HNN over Zmod4
+gp5 is Cox333 HNN over Zmod2
+gp6 is F2 HNN over Z
+ArtinEx is ?

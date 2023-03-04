@@ -1,0 +1,11 @@
+_RWS_Cos := rec(
+           isRWS := true,
+  generatorOrder := [c,C,d,D,_H,x,x^-1],
+        ordering := "wreathprod",
+           level := [2,2,2,2,1,1,1],
+        inverses := [C,c,D,d,,x^-1,x],
+       equations := [
+         [d*c,c*d],
+         [_H*c,x*_H]
+       ]
+);

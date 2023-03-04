@@ -1,0 +1,25 @@
+_RWS_Cos.wa := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "identifiers",
+                size := 6,
+              format := "dense",
+               names := [a,A,b,B,c,C]
+               ),
+          states := rec(
+                type := "simple",
+                size := 4
+               ),
+           flags := ["DFA","minimized","BFS","accessible","trim"],
+         initial := [1],
+       accepting := [1..4],
+           table := rec(
+              format := "dense deterministic",
+      numTransitions := 6,
+         transitions := [[2,0,0,0,3,4],
+                         [0,0,0,0,3,4],
+                         [0,0,0,0,4,0],
+                         [0,0,0,0,0,0] 
+                        ]
+               )
+);

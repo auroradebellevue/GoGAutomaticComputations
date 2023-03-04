@@ -1,0 +1,10 @@
+# F2 gen by a, b with a first
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [a, A, b, B],
+  inverses := [A, a, B, b],
+  equations := [
+    ]
+
+);

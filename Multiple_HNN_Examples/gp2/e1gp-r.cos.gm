@@ -1,0 +1,67 @@
+_RWS_Cos.gm := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "product",
+                size := 48,
+               arity := 2,
+             padding := _,
+                base := rec(
+                    type := "identifiers",
+                    size := 6,
+                  format := "dense",
+                   names := [a,A,b,B,c,C]
+                   ) 
+               ),
+          states := rec(
+                type := "labeled",
+                size := 15,
+              labels := rec(
+                    type := "list of words",
+                    size := 4,
+                alphabet := [a,A,b,B,c,C],
+                  format := "sparse",
+                   names := [
+                    [1,[IdWord,b,B]],
+                    [2,[a,A]],
+                    [3,[C]],
+                    [4,[c]]
+                  ]
+                   ),
+              format := "sparse",
+         setToLabels := [
+                         [1,1],
+                         [2,1],
+                         [5,2],
+                         [7,1],
+                         [9,3],
+                         [12,1],
+                         [13,4]
+                        ]
+               ),
+           flags := ["DFA","BFS","accessible"],
+         initial := [1],
+       accepting := [1,2,5,7,9,12,13],
+           table := rec(
+              format := "sparse",
+      numTransitions := 36,
+         transitions := [[[1,2],[5,3],[6,4],[7,5],[29,6],[33,7],[34,8],
+                          [35,9],[36,10],[40,11],[41,12],[42,13],[43,5],
+                          [47,13],[48,9]],
+                         [[33,7],[34,8],[35,9],[40,11],[41,12],[42,13],
+                          [47,13],[48,9]],
+                         [[33,14],[35,5]],
+                         [[42,5]],
+                         [],
+                         [[33,15],[47,5]],
+                         [[33,12],[35,9],[47,13]],
+                         [[35,13]],
+                         [],
+                         [[48,5]],
+                         [[47,9]],
+                         [],
+                         [],
+                         [[35,5]],
+                         [[47,5]] 
+                        ]
+               )
+);

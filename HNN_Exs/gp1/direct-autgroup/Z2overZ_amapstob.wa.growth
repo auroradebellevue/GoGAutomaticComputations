@@ -1,0 +1,6 @@
+local X; X:=Indeterminate(Rationals,1); return
+
+#result modulo prime 32749:
+(1 + 2*X + X^2)/(1 - 4*X + 3*X^2);
+#result modulo prime 32719: (as previous)
+#result modulo prime 32717: (as previous)

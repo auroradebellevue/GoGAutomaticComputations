@@ -1,0 +1,65 @@
+_RWS_Cos.migm := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "product",
+                size := 24,
+               arity := 2,
+             padding := _,
+                base := rec(
+                    type := "identifiers",
+                    size := 4,
+                  format := "dense",
+                   names := [c,C,d,D]
+                   ) 
+               ),
+          states := rec(
+                type := "labeled",
+                size := 11,
+              labels := rec(
+                    type := "list of words",
+                    size := 5,
+                alphabet := [c,C,d,D],
+                  format := "sparse",
+                   names := [
+                    [1,[IdWord]],
+                    [2,[C]],
+                    [3,[c]],
+                    [4,[D]],
+                    [5,[d]]
+                  ]
+                   ),
+              format := "sparse",
+         setToLabels := [
+                         [1,1],
+                         [2,2],
+                         [3,3],
+                         [4,1],
+                         [5,4],
+                         [6,1],
+                         [7,5],
+                         [8,2],
+                         [9,2],
+                         [10,3],
+                         [11,3]
+                        ]
+               ),
+           flags := ["MIDFA","accessible"],
+         initial := [1,2,3],
+       accepting := [1..11],
+           table := rec(
+              format := "sparse",
+      numTransitions := 20,
+         transitions := [[[13,4],[15,5],[19,6],[20,7],[23,7],[24,5]],
+                         [[13,8],[19,9]],
+                         [[13,10],[19,11]],
+                         [[13,4],[15,5],[23,7]],
+                         [],
+                         [[19,6],[20,7],[24,5]],
+                         [],
+                         [[13,8]],
+                         [[19,9]],
+                         [[13,10]],
+                         [[19,11]] 
+                        ]
+               )
+);
