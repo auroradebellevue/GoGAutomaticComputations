@@ -189,7 +189,7 @@ def main(argv):
     #Multiplier Automaton
     print("***********************************\n\n")
     print("attempting multiplier building")
-    gog.gm=Multiplier.make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, True)
+    gog.gm=Multiplier.make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, False)
     for iLetter in range(len(gog.mult_list)):
         gog.mult_list[iLetter][1].print_fsa(out_dir+"fsaminLetter_"+gog.mult_list[iLetter][0]+".txt")
     print("***********************************\n\n")
