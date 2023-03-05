@@ -1,0 +1,14 @@
+# Zmod4xZmod4 gen by a, b with a first
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [a, A, b,B, t0, T0],
+  inverses := [A, a, B,b, T0, t0],
+  equations := [
+  [a*a*a*a, IdWord ],
+  [b*b*b*b, IdWord],
+  [b*a,a*b],
+  [t0*a,b*t0]
+  ]
+
+);

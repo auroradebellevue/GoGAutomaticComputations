@@ -1,0 +1,68 @@
+_RWS_Cos.migm := rec(
+           isFSA := true,
+        alphabet := rec(
+                type := "product",
+                size := 24,
+               arity := 2,
+             padding := _,
+                base := rec(
+                    type := "identifiers",
+                    size := 4,
+                  format := "dense",
+                   names := [b,B,a,A]
+                   ) 
+               ),
+          states := rec(
+                type := "labeled",
+                size := 13,
+              labels := rec(
+                    type := "list of words",
+                    size := 5,
+                alphabet := [b,B,a,A],
+                  format := "sparse",
+                   names := [
+                    [1,[IdWord]],
+                    [2,[B]],
+                    [3,[b]],
+                    [4,[A]],
+                    [5,[a]]
+                  ]
+                   ),
+              format := "sparse",
+         setToLabels := [
+                         [1,1],
+                         [2,2],
+                         [3,3],
+                         [4,1],
+                         [6,4],
+                         [8,1],
+                         [9,5],
+                         [10,2],
+                         [11,2],
+                         [12,3],
+                         [13,3]
+                        ]
+               ),
+           flags := ["MIDFA","accessible"],
+         initial := [1,2,3],
+       accepting := [1,2,3,4,6,8,9,10,11,12,13],
+           table := rec(
+              format := "sparse",
+      numTransitions := 19,
+         transitions := [[[13,4],[14,5],[15,6],[18,7],[19,8],[20,9],[23,9],
+                          [24,6]],
+                         [[13,10],[19,11]],
+                         [[13,12],[19,13]],
+                         [[13,8],[15,6],[23,9]],
+                         [[15,9]],
+                         [],
+                         [[23,6]],
+                         [],
+                         [],
+                         [[13,11]],
+                         [],
+                         [[13,13]],
+                         [] 
+                        ]
+               )
+);

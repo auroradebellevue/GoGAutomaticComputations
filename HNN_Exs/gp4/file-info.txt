@@ -1,3 +1,3 @@
 #graph of groups structure example
 
-v0gp, e0gp-f.sub, e0gp-r.sub, aAbB
+v0gp-ind,e0gp-f,e0gp-f.sub,e0gp-r,e0gp-r.sub,aAbB

@@ -542,8 +542,8 @@ def create_states(lines, alpha_size):
             accept_state_index=state_lines.index(l)
             accept_state_lines = state_lines[accept_state_index:]
             accept_state_lines = "".join(accept_state_lines)
-    info_index1=state_lines[accept_state_index].find("[")
-    info_index2=state_lines[accept_state_index].find("]")
+    info_index1=accept_state_lines.find("[")
+    info_index2=accept_state_lines.find("]")
     fsa_accepting=[]
     #if the accepting states are a list written in shorthand because the
     #accepting state labels are consecutive numbers
@@ -555,6 +555,7 @@ def create_states(lines, alpha_size):
     #if the accepting states are a list written with commas 
     elif state_lines[accept_state_index][info_index1+1:info_index2].find(",")!= -1:
         temp_str=accept_state_lines[info_index1+1:info_index2]
+        print(temp_str)
         lst=temp_str.split(",")
         for i in range(len(lst)):
             lst[i]=int(lst[i])
