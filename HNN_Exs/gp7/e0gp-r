@@ -1,0 +1,11 @@
+# B(3) gen by a, b with b, B first
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [b, B, a, A],
+  inverses := [B, b, A, a],
+  equations := [
+  [b*a*b, a*b*a ]
+  ]
+
+);
