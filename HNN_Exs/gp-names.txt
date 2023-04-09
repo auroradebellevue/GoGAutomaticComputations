@@ -4,4 +4,5 @@ gp3 is Zmod4 HNN over Zmod4
 gp4 is Zmod4 x Zmod4 HNN over Zmod4
 gp5 is Cox333 HNN over Zmod2
 gp6 is F2 HNN over Z
+gp7 is B(3) over Z Braid group on 3 strands
 ArtinEx is ?

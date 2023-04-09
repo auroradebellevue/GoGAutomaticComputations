@@ -1,0 +1,5 @@
+# subgroup gen by a and b
+_RWS_Sub := rec(
+  subGenerators:=[a,b],
+  subGeneratorNames:=[x,y]
+);
