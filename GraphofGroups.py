@@ -25,7 +25,7 @@ class graph_of_groups(object):
         self.wa = ""
         self.wa_file = "Pi1GraphofGroupsWordAcceptor.wa"
         self.gm = ""
-        self.gm_file = "somenamethatmakessense.gm"
+        self.gm_file = "somenamethatmakessense.gm" #TODO
         self.mult_list=[]
 
     def cascade(self, w, file_dir, kbmag_ftn_dir):

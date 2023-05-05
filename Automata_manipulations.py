@@ -79,7 +79,7 @@ def read_automata_from_file(file_dir, file_name):
             #for each line, remove unnecessary 
             for s in bad_chars:
                 file_lines[iLine]=file_lines[iLine].replace(s, str())
-        print(file_lines[0:4])
+                    
         #create alphabet info
         numAlphabet = int(file_lines[index0].replace("Alphabet:", str()))
         
@@ -87,15 +87,18 @@ def read_automata_from_file(file_dir, file_name):
         numStates = int(file_lines[index1].replace("Number:", str()))
         initState = file_lines[index2].replace("Initial:", str())
         initState = int(initState)
-        acceptStates = file_lines[index3].replace("Accepting:", str())
+        
+        acceptStateLines = file_lines[index3:index4]
+        acceptStateLines = "".join(acceptStateLines)
+        acceptStates = acceptStateLines.replace("Accepting:", str())
         acceptStates = acceptStates.split(",")
         for i in range(len(acceptStates)):
             acceptStates[i]=int(acceptStates[i])
         
-        #print("numAlphabet", numAlphabet, type(numAlphabet))
-        #print("numStates", numStates, type(numStates))
-        #print("initState", initState, type(initState))
-        #print("acceptStates", acceptStates, type(acceptStates))
+        print("numAlphabet", numAlphabet, type(numAlphabet))
+        print("numStates", numStates, type(numStates))
+        print("initState", initState, type(initState))
+        print("acceptStates", acceptStates, type(acceptStates))
         
         #creates the table and transposes it
         tableLines = file_lines[index4:]
@@ -108,8 +111,10 @@ def read_automata_from_file(file_dir, file_name):
         for s in bad_chars:
             str_table=str_table.replace(s, "")
         
+        
         #split str_table by commas to give list as strings
         str_table=str_table.split(",")
+        print("table as string", str_table)
         #join together entries according to the size of the states and 
         #convert entries from strings to integers (for printing later)
         table = []
@@ -143,6 +148,9 @@ def table_transpose(table, nCol, nRow):
 ####################################################
 #Driver Test
 #read_automata_from_file("/home/aurora/Dropbox/PythonGroupTheory/autminKBMAGEx.txt")
+
+#Long accept list test
+#read_automata_from_file("/home/aurora/Dropbox/PythonGroupTheory/", "autminLongAccept.txt")
 
 """
 #example from kbmag
