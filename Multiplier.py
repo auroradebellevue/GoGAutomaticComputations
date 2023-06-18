@@ -471,33 +471,36 @@ def new_bdd_wd(mid_wd, ltr_pair, vfile, kbmag_ftn_dir, file_dir):
     return new_mid_wd
 
 def find_k(gog, travel_info, file_dir, kbmag_ftn_dir, verbose):
-    # construct the fellow traveling constant. Call it M
-    if len(travel_info)==0:
-        M = find_M(gog, file_dir, kbmag_ftn_dir)
-    elif len(travel_info)==1:
-        M = int(travel_info[0])
-    else:
-        #calculating n1
-        Ge_wa = FSA.create_fsa_from_file(file_dir + gog.vertices[0].subgp+".wa")
-        Ge_gm = FSA.create_fsa_from_file(file_dir + gog.vertices[0].subgp+".gm")
-        Ge_gm_list = gm_split(Ge_gm, file_dir, kbmag_ftn_dir)
-        gm_sizes = []
-        for gm in Ge_gm_list:
-            gm_sizes.append(gm[0].states.size)
-        n_gm=max(gm_sizes)
-        print(gm_sizes)
-        n_ge=Ge_wa.states.size
-        print(n_ge)
-        n1 = max(n_ge, n_gm)+ 1
-        #grab fellow travel info
-        k2 = int(travel_info[0])
-        K = int(travel_info[1])
-        
-        k3=K^2 + 1
-        print('k2', k2, 'K', K, 'n1', n1, 'k3', k3)
-        #calculating M
-        k4 = max(k3, k2)
-        M = k4*k4 + k4*n1
+    Manual = False
+    if Manual == True:
+        # construct the fellow traveling constant. Call it M
+        if len(travel_info)==0:
+            M = find_M(gog, file_dir, kbmag_ftn_dir)
+        elif len(travel_info)==1:
+            M = int(travel_info[0])
+        else:
+            #calculating n1
+            Ge_wa = FSA.create_fsa_from_file(file_dir + gog.vertices[0].subgp+".wa")
+            Ge_gm = FSA.create_fsa_from_file(file_dir + gog.vertices[0].subgp+".gm")
+            Ge_gm_list = gm_split(Ge_gm, file_dir, kbmag_ftn_dir)
+            gm_sizes = []
+            for gm in Ge_gm_list:
+                gm_sizes.append(gm[0].states.size)
+            n_gm=max(gm_sizes)
+            print(gm_sizes)
+            n_ge=Ge_wa.states.size
+            print(n_ge)
+            n1 = max(n_ge, n_gm)+ 1
+            #grab fellow travel info
+            k2 = int(travel_info[0])
+            K = int(travel_info[1])
+
+            k3=K^2 + 1
+            print('k2', k2, 'K', K, 'n1', n1, 'k3', k3)
+            #calculating M
+            k4 = max(k3, k2)
+            M = k4*k4 + k4*n1
+        print("Fellow traveling constant", M)
     return M
 
 def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
@@ -535,133 +538,208 @@ def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
     print("general multiplier alphabet")
     print("**************************************************", "\n")
     print(gm_alph.names)
+    k=0
+    Mults_Same_NF = False
+    while(Mults_Same_NF == False):
+        k = k+1
+        k = find_k(gog, travel_info, file_dir, kbmag_ftn_dir, verbose)
+        #create fail state
+        fail_state = mult_st(0, 0, 0, 0, 0)
+        state_list = [fail_state]
+        state_done = [True]
+        # create start state
+        start_state = mult_st(1, 1, "IdWord", 0, 0)
+        state_list.append(start_state)
+        state_done.append(False)
+        acc_states = [state_list.index(start_state)]
     
-    k = find_k(gog, travel_info, file_dir, kbmag_ftn_dir, verbose)
-    #create fail state
-    fail_state = mult_st(0, 0, 0, 0, 0)
-    state_list = [fail_state]
-    state_done = [True]
-    # create start state
-    start_state = mult_st(1, 1, "IdWord", 0, 0)
-    state_list.append(start_state)
-    state_done.append(False)
-    acc_states = [state_list.index(start_state)]
-    
-    # append entries of the transition table to transition_test
-    print("**************************************************")
-    print("transition function process for k set to "+str(k))
-    print("**************************************************")
-    if verbose ==True:
-        f = open(file_dir+"transition_test.txt", "w")
-    # build transition function and state list
-    # only add accessible states to the list of states
-    new_t = []
-    IsAcceptState = False
-    while False in state_done:
-        new_row = []
-        index = state_done.index(False)
-        s = state_list[index]
-        for (x, y) in gm_alph.names:
-            new_s , IsAcceptState = find_trans(gog, s, (x, y), k, kbmag_ftn_dir, file_dir)
+        # append entries of the transition table to transition_test
+        print("**************************************************")
+        print("transition function process for k set to "+str(k))
+        print("**************************************************")
+        if verbose ==True:
+            f = open(file_dir+"transition_test.txt", "w")
+            # build transition function and state list
+            # only add accessible states to the list of states
+            new_t = []
+            IsAcceptState = False
+        while False in state_done:
+            new_row = []
+            index = state_done.index(False)
+            s = state_list[index]
+            for (x, y) in gm_alph.names:
+                new_s , IsAcceptState = find_trans(gog, s, (x, y), k, kbmag_ftn_dir, file_dir)
             
-            if verbose == True:
-                f.write("current state ")
-                f.write("("+str(s.p) + ", "+str(s.q)+", " + str(s.wd)+", "+str(s.leftPad)+", "+str(s.rightPad)+"), ")
-                f.write("letter pair ")
-                f.write("("+str(x)+","+str(y)+")"+", ")
-                f.write("next state ")
-                f.write("("+str(new_s.p)+", "+str(new_s.q)+", "+str(new_s.wd)+", "+str(new_s.leftPad)+", "+str(new_s.rightPad)+"), ")
+                if verbose == True:
+                    f.write("current state ")
+                    f.write("("+str(s.p) + ", "+str(s.q)+", " + str(s.wd)+", "+str(s.leftPad)+", "+str(s.rightPad)+"), ")
+                    f.write("letter pair ")
+                    f.write("("+str(x)+","+str(y)+")"+", ")
+                    f.write("next state ")
+                    f.write("("+str(new_s.p)+", "+str(new_s.q)+", "+str(new_s.wd)+", "+str(new_s.leftPad)+", "+str(new_s.rightPad)+"), ")
             
-            # check if new_s is in the state_list
-            in_list = False
-            state_index = "TBA"
-            for state in state_list:
-                if int(new_s.p) == int(state.p) and int(new_s.q) == int(state.q) and new_s.wd == state.wd and int(new_s.leftPad)==int(state.leftPad) and int(new_s.rightPad)==int(state.rightPad):
-                    in_list = True
-                    state_index = state_list.index(state)
+                # check if new_s is in the state_list
+                in_list = False
+                state_index = "TBA"
+                for state in state_list:
+                    if int(new_s.p) == int(state.p) and int(new_s.q) == int(state.q) and new_s.wd == state.wd and int(new_s.leftPad)==int(state.leftPad) and int(new_s.rightPad)==int(state.rightPad):
+                        in_list = True
+                        state_index = state_list.index(state)
             #print(str(new_s), "in list", in_list, "with index ", state_index)
             #print("types and length of new state:", type(new_s.p), type(new_s.q), type(new_s.wd))
             
             #Otherwise, add new_s to the state list unless it is the fail state        
-            if in_list == False and new_s.wd != 0:  # do not add the fail state to the state list
-                state_list.append(new_s)
-                state_done.append(False)
-                state_index = len(state_list)-1
-                #if IsAcceptState is True, add index(new_s) to the accepting state list
-                if IsAcceptState == True:
-                    acc_states.append(state_index)
+                if in_list == False and new_s.wd != 0:  # do not add the fail state to the state list
+                    state_list.append(new_s)
+                    state_done.append(False)
+                    state_index = len(state_list)-1
+                    #if IsAcceptState is True, add index(new_s) to the accepting state list
+                    if IsAcceptState == True:
+                        acc_states.append(state_index)
                 
-            if verbose == True:
-                #print("index of new state", state_index)
-                #print("The state list: ", str(state_list))
-                f.write("index in state_list ")
-                f.write(str(state_index))
-                f.write("Accepting: " + str(IsAcceptState)+"\t" )
+                if verbose == True:
+                    #print("index of new state", state_index)
+                    #print("The state list: ", str(state_list))
+                    f.write("index in state_list ")
+                    f.write(str(state_index))
+                    f.write("Accepting: " + str(IsAcceptState)+"\t" )
 
-            #the state is identified by the index in state_list
-            if new_s.wd != 0:
-                state_label = int(state_index)
-            else: #the label of the fail state is 0
-                state_label = int(0)
-            #add the entry to the current row of the transition table
-            new_row.append(state_label)
+                #the state is identified by the index in state_list
+                if new_s.wd != 0:
+                    state_label = int(state_index)
+                else: #the label of the fail state is 0
+                    state_label = int(0)
+                    #add the entry to the current row of the transition table
+                new_row.append(state_label)
+                if verbose == True:
+                    #print("state list: ", str(state_list))
+                    #print("\n\n\n")
+                    f.write("new state:"+ str(new_s)+ " new state label: "+ str(state_label)+ "\n")
+            #add the current row to the new transition table
+            new_t.append(new_row)
             if verbose == True:
-                #print("state list: ", str(state_list))
-                #print("\n\n\n")
-                f.write("new state:"+ str(new_s)+ " new state label: "+ str(state_label)+ "\n")
-        #add the current row to the new transition table
-        new_t.append(new_row)
-        if verbose == True:
             
-            f.write("state list: "+ str(state_list)+ "\n")
-            f.write(str(new_row))
-            f.write("\n")
-        state_done[index] = True
-        #end of while
-    if verbose == True:
-        f.close()
+                f.write("state list: "+ str(state_list)+ "\n")
+                f.write(str(new_row))
+                f.write("\n")
+            state_done[index] = True
+            #end of while for finding states
+        if verbose == True:
+            f.close()
     
-    #Save the labels of the states and find unique labels
-    label_list = [state_list[i].wd for i in range(len(state_list)) ]
-    acc_wd_list = [state_list[int(acc_states[i])].wd for i in range(len(acc_states))]
-    unique_acc_labels = []
-    for i in range(len(acc_wd_list)):
-        if acc_wd_list[i] not in unique_acc_labels:
-            unique_acc_labels.append(acc_wd_list[i])
-    label_numbers = [[i+1, unique_acc_labels[i]] for i in range(len(unique_acc_labels))]
-    label_state_pairs = [[acc_states[i], unique_acc_labels.index(acc_wd_list[i])+1] for i in range(len(acc_states))]
-    if verbose == True:
-        print("state list has length ", str(len(state_list)))
-        print("state list", state_list)
-        print("number of accepting states", str(len(acc_states)))
-        print("accept state list", acc_states)
-        print("accept word differences", acc_wd_list)
-        print("number of rows of new transition table", str(len(state_list)))
-        print("list of word differences", label_list, "with length", len(label_list))
-        print("label state pairs for printing", label_state_pairs)
-        print("label numbering", label_numbers)
+        #Save the labels of the states and find unique labels
+        label_list = [state_list[i].wd for i in range(len(state_list)) ]
+        acc_wd_list = [state_list[int(acc_states[i])].wd for i in range(len(acc_states))]
+        unique_acc_labels = []
+        for i in range(len(acc_wd_list)):
+            if acc_wd_list[i] not in unique_acc_labels:
+                unique_acc_labels.append(acc_wd_list[i])
+        label_numbers = [[i+1, unique_acc_labels[i]] for i in range(len(unique_acc_labels))]
+        label_state_pairs = [[acc_states[i], unique_acc_labels.index(acc_wd_list[i])+1] for i in range(len(acc_states))]
+        if verbose == True:
+            print("state list has length ", str(len(state_list)))
+            print("state list", state_list)
+            print("number of accepting states", str(len(acc_states)))
+            print("accept state list", acc_states)
+            print("accept word differences", acc_wd_list)
+            print("number of rows of new transition table", str(len(state_list)))
+            print("list of word differences", label_list, "with length", len(label_list))
+            print("label state pairs for printing", label_state_pairs)
+            print("label numbering", label_numbers)
         
-    #Convert state labels to index in state_list but pop 0
-    state_list = [int(i) for i in range(len(state_list)) ]
-    state_list.pop(0)
+        #Convert state labels to index in state_list but pop 0
+        state_list = [int(i) for i in range(len(state_list)) ]
+        state_list.pop(0)
     
-    if verbose == True:
-        print(state_list) 
-        print("state list length after discarding fail state", len(state_list))
+        if verbose == True:
+            print(state_list) 
+            print("state list length after discarding fail state", len(state_list))
     
-    #Make GM state labels and state object
-    gm_states = FSA.states(len(state_list), [state_list[0]], acc_states)
-    gm_states.format="labeled"
-    gm_states.label_numbers_pairs = label_numbers
-    gm_states.label_states_pairs = label_state_pairs
-    #Create table object for gm
-    gm_table = FSA.table("dense deterministic", new_t)
-    
-    
+        #Make GM state labels and state object
+        gm_states = FSA.states(len(state_list), [state_list[0]], acc_states)
+        gm_states.format="labeled"
+        gm_states.label_numbers_pairs = label_numbers
+        gm_states.label_states_pairs = label_state_pairs
+        #Create table object for gm
+        gm_table = FSA.table("dense deterministic", new_t)
+        
+        #Now check if the projection onto the first coordinate is the same as NF
+        #For each letter!!!!!!!!!
+        isKTooSmall = False
+        for iLetter in range(len(gm_states.label_numbers_pairs)):
+            acceptingForLetter = []
+            for iState in range(len(gm_states.label_states_pairs)):
+                if gm_states.label_states_pairs[iState][1]==gm_states.label_numbers_pairs[iLetter][0]:
+                    acceptingForLetter.append(gm_states.label_states_pairs[iState][0])
+            print("Checking Projection FSA for Letter", gm_states.label_numbers_pairs[iLetter][1]) 
+            print("Accepting States for letter", acceptingForLetter)
+
+            #test kbmag
+            temp_gm_states = FSA.states(len(state_list), [state_list[0]], acceptingForLetter)
+            testFSA = FSA.fsa(gm_alph, temp_gm_states, gm_table)
+            testFSA.print_fsa(file_dir+"testFSA.txt")
+
+
+            eps_alpha = gm_alph.base.copy()
+            eps_alpha.append("_")
+            test_alphabet = FSA.alphabet(len(eps_alpha), eps_alpha, "identifiers")
+
+            #find initial state
+            init_state= {1}
+            test_state_list = [init_state]
+            test_state_done = [False]
+            #The intial state is always an accept state since we are not checking the 
+            #pairs (_, x) for x in X
+            if iLetter == 0:
+                test_acc_states = [{1}]
+            else:
+                test_acc_states = []
+            #print(eps_alpha)
+            if verbose ==True:
+                g = open(file_dir+"projection_test.txt", "w")
+            test_table=[]
+            #find the transition table for the projection onto the first coordinate
+            for iRow in range(len(new_t)):
+                temp_row = []
+                for iFirstLetter in range(len(gm_alph.base)+1):
+                    new_st = set()
+                    for iSecondLetter in range(len(gm_alph.base)+1):
+                        alpha_index = iFirstLetter*(len(gm_alph.base)+1)+iSecondLetter
+                        if alpha_index != len(eps_alpha)*len(eps_alpha)-1:
+                            new_st.add(new_t[iRow][alpha_index])
+                    new_st = FSA.rem_0(new_st)
+                    temp_row.append(new_st)
+                test_table.append(temp_row)
+            print("test table info", len(test_table))
+            print("new test table", test_table)   
+            print("accept states", test_acc_states)
+            #define state object
+            test_states = FSA.states(len(test_state_list), [{1}], test_acc_states)
+            #define table object
+            test_table_object = FSA.table("non-det dense", test_table)
+            #define the ndfsa with epsilon transitions
+            test_ndfsa_with_eps = FSA.ndfsa(test_alphabet, test_states, test_table_object)
+            #make it an ndfsa without epsilon transitions
+            test_ndfsa = FSA.e_free_ndfsa(test_ndfsa_with_eps)
+            #make it a det fsa 
+            test_fsa = FSA.make_det(test_ndfsa)
+            #print out fsa file and compare the projection to the NF
+            projection_file = "proj1-GM-Letter-"+str(gm_states.label_numbers_pairs[iLetter][1])+"-"+str(k)+".txt"
+            test_fsa.print_fsa(file_dir + projection_file)
+            output = subprocess.run([kbmag_ftn_dir+"fsalequal", out_dir+gog.wa_file, file_dir+projection_file])
+            print("fsaequal output for "+ str(gm_states.label_numbers_pairs[iLetter][1])+": "+ str(output.returncode))
+            if output.returncode != 0:
+                print("k will now be increased")
+                break #break out of the for loop for checking the letters, we know k is too small
+
+        break            
+        #end of while loop for k-fellow constant
+    if verbose ==True:
+        g.close()
     #Finally, create unminimized gm object
     unmin_gm = FSA.fsa(gm_alph, gm_states, gm_table)
     unmin_gm.flags.append("gm")
-    unmin_gm.print_fsa("unmingm.gm")
+    unmin_gm.print_fsa(file_dir+"unmingm.gm")
     
     #For each accepting state label, Minimize unmin_gm using the Automata package
     tableTranspose = Automata.table_transpose(unmin_gm.table.transitions, unmin_gm.alphabet.size, unmin_gm.states.size)
@@ -670,9 +748,9 @@ def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
         for iState in range(len(gm_states.label_states_pairs)):
             if gm_states.label_states_pairs[iState][1]==gm_states.label_numbers_pairs[iLetter][0]:
                 acceptingForLetter.append(gm_states.label_states_pairs[iState][0])
-        if verbose == True:
-            print("Minimizing piece of GM which accepts (w,v) for the letter "+ str(gm_states.label_numbers_pairs[iLetter][1]))
-            print(acceptingForLetter)
+            if verbose == True:
+                print("Minimizing piece of GM which accepts (w,v) for the letter "+ str(gm_states.label_numbers_pairs[iLetter][1]))
+                print(acceptingForLetter)
         gm_aut = Automata.automata("det", 
                                 unmin_gm.states.size, 
                                 unmin_gm.alphabet.size, 
@@ -938,5 +1016,3 @@ def find_M(gog, file_dir, kbmag_ftn_dir):
     M = max(k3, k2)^2 + max(k3, k2)*n1
     return M
     
-def fancy_states(state_list, accept_list):
-    print("hi")
