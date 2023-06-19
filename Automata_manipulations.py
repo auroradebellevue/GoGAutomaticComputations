@@ -86,7 +86,7 @@ def read_automata_from_file(file_dir, file_name):
         #create state info
         numStates = int(file_lines[index1].replace("Number:", str()))
         initState = file_lines[index2].replace("Initial:", str())
-        initState = int(initState)
+        initState = [int(initState)]
         
         acceptStateLines = file_lines[index3:index4]
         acceptStateLines = "".join(acceptStateLines)

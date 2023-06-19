@@ -150,7 +150,7 @@ class fsa(object):
                     file.write(sTab+sTab+"),\n")
                                
                 file.write(sTab+"flags := [\"DFA\"],\n")
-                file.write(sTab+"initial := ["+str(self.states.initial)+"],\n")
+                file.write(sTab+"initial := ["+str(self.states.initial[0])+"],\n")
                 file.write(sTab+"accepting := "+str(self.states.accepting)+",\n")
             if self.table.format=="dense deterministic":
                 file.write(sTab+"table := rec(\n")
