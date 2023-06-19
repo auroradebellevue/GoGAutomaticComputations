@@ -661,7 +661,7 @@ def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
     #Finally, create unminimized gm object
     unmin_gm = FSA.fsa(gm_alph, gm_states, gm_table)
     unmin_gm.flags.append("gm")
-    unmin_gm.print_fsa("unmingm.gm")
+    unmin_gm.print_fsa(file_dir+"unmingm.gm")
     
     #For each accepting state label, Minimize unmin_gm using the Automata package
     tableTranspose = Automata.table_transpose(unmin_gm.table.transitions, unmin_gm.alphabet.size, unmin_gm.states.size)
