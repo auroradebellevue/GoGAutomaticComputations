@@ -69,7 +69,7 @@ class fsa(object):
             elif "gm" in self.flags:
                 file.write("_RWS.gm := rec(\n")
             else: 
-                file.write("_RWS.wa := rec(\n")
+                file.write("_RWS.mult := rec(\n")
             file.write(sTab+"isFSA := true,\n")
             if self.alphabet.type=="product":
                 file.write(sTab+"alphabet := rec(\n")
@@ -150,7 +150,7 @@ class fsa(object):
                     file.write(sTab+sTab+"),\n")
                                
                 file.write(sTab+"flags := [\"DFA\"],\n")
-                file.write(sTab+"initial := "+str(self.states.initial)+",\n")
+                file.write(sTab+"initial := ["+str(self.states.initial)+"],\n")
                 file.write(sTab+"accepting := "+str(self.states.accepting)+",\n")
             if self.table.format=="dense deterministic":
                 file.write(sTab+"table := rec(\n")
