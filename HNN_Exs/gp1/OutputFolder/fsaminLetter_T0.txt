@@ -1,4 +1,4 @@
-_RWS.wa := rec(
+_RWS.mult := rec(
         isFSA := true,
         alphabet := rec(
                 type := "product", 
@@ -36,7 +36,7 @@ _RWS.wa := rec(
                 ]
                 ),
         flags := ["DFA"],
-        initial := 1,
+        initial := [1],
         accepting := [10],
         table := rec(
         format := "dense deterministic",

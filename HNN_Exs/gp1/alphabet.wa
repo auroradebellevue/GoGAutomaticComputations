@@ -1,4 +1,4 @@
-_RWS.wa := rec(
+_RWS.mult := rec(
         isFSA := true,
         alphabet := rec(
                 type := "identifiers", 
