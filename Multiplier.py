@@ -523,8 +523,8 @@ def testMultiplier(testFSA, fsaString, goalWAString, file_dir, kbmag_ftn_dir, ou
     #print out fsa file and compare the projection to the NF
     projection_file = fsaString+".txt"
     letter_fsa.print_fsa(file_dir + projection_file)
-    output = subprocess.run([kbmag_ftn_dir+"fsalequal", file_dir + out_dir + goalWAString, file_dir+projection_file])
-    print("fsaequal output for letter: "+ fsaString + " " + str(output.returncode)+ "\n")
+    output = subprocess.run([kbmag_ftn_dir+"fsalequal", out_dir + goalWAString, file_dir+projection_file])
+    #print("fsaequal output for letter: "+ fsaString + " " + str(output.returncode)+ "\n")
     return output.returncode
 
 def find_k(gog, travel_info, file_dir, kbmag_ftn_dir, verbose):
@@ -605,30 +605,44 @@ def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
     for iLetter in gm_alph.base:
         letter_TF_list.append(False) #false for each letter  
         letter_fellowConstant.append(0) #0 for each letter
-    generalMultiplierLists = []
+    generalMultiplierList = []
     multiplierLetters = ["IdWord"] + gm_alph.base.copy() 
     
     k=0
     #start the while loop for increasing k
     while False in letter_TF_list:
-        tempFSA = draft_multiplier(k, gm_alph, gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose)
-        generalMultiplierLists.append(tempFSA)
+        tempFSA = draft_multiplier(k, gm_alph, gog, file_dir, kbmag_ftn_dir, out_dir, verbose)
+        generalMultiplierList.append(tempFSA)
+        print("tempFSA number pairs: ", tempFSA.states.label_numbers_pairs)
         for index in range(len(letter_TF_list)):
-            if letter_TF_list == False:
-                testResult = testMultiplier(generalMultiplierLists[index], multiplierLetters[index], gog.wa_file, file_dir, kbmag_ftn_dir, out_dir)
-                letter_TF_list[index] = testResult
-                if testResult == True:
-                    letter_fellowConstant[index] = k
+            if letter_TF_list[index] == False:
+                if index < len(tempFSA.states.label_numbers_pairs):
+                    acceptingForLetter = []
+                    for iState in range(len(tempFSA.states.label_states_pairs)):
+                        if tempFSA.states.label_states_pairs[iState][1]==tempFSA.states.label_numbers_pairs[index][0]:
+                            acceptingForLetter.append(tempFSA.states.label_states_pairs[iState][0])
+                    tempFSA = FSA.fsa(generalMultiplierList[k].alphabet, generalMultiplierList[k].states, generalMultiplierList[k].table)
+                    tempFSA.states.accepting = acceptingForLetter
+                    print("temp FSA accepting", tempFSA.states.accepting)
+                    print("general multiplier accepting", generalMultiplierList[k].states.accepting)
+                    testResult = testMultiplier(tempFSA, multiplierLetters[index], gog.wa_file, file_dir, kbmag_ftn_dir, out_dir)
+                    print("Test result for the letter: ", multiplierLetters[index], testResult)
+                    if testResult == 0:
+                        letter_TF_list[index] = True
+                        letter_fellowConstant[index] = k
+                
         k+=1
         print("Increasing k to ", str(k))
+        print("Current letter T/F list: ", letter_TF_list)
     
     #find the maximum of letter_fellowConstant
-    
+    calculatedK = max(letter_fellowConstant)
+    print("The fellow traveling constant that works for every letter is ", calculatedK)
     #Finally, create unminimized gm object
-    unmin_gm = FSA.fsa(gm_alph, gm_states, gm_table)
+    unmin_gm = generalMultiplierList[calculatedK]
     unmin_gm.flags.append("gm")
     unmin_gm.print_fsa(file_dir+"unmingm.gm")
-    
+    gm_states = unmin_gm.states
     #For each accepting state label, Minimize unmin_gm using the Automata package
     tableTranspose = Automata.table_transpose(unmin_gm.table.transitions, unmin_gm.alphabet.size, unmin_gm.states.size)
     for iLetter in range(len(gm_states.label_numbers_pairs)):
@@ -671,76 +685,9 @@ def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
         tempFSA = FSA.fsa(gm_alph, mul_states, mul_table)
         gog.mult_list.append([str(gm_states.label_numbers_pairs[iLetter][1]), tempFSA] )
     
-    
     # full_gm = FSA.labeled_min(unmin_gm)
     # full_gm.print_fsa(file_dir + 'HigginsNF.gm')
     return 0
-
-def checkGeneralMultiplier(gog):
-    acceptingForLetter = []
-    for iState in range(len(gm_states.label_states_pairs)):
-        if gm_states.label_states_pairs[iState][1]==gm_states.label_numbers_pairs[iLetter][0]:
-            acceptingForLetter.append(gm_states.label_states_pairs[iState][0])
-    print("Checking Projection FSA for Letter", gm_states.label_numbers_pairs[iLetter][1]) 
-    print("Accepting States for letter", acceptingForLetter)
-
-    #test kbmag
-    temp_gm_states = FSA.states(len(state_list), [state_list[0]], acceptingForLetter)
-    testFSA = FSA.fsa(gm_alph, temp_gm_states, gm_table)
-    testFSA.print_fsa(file_dir+"testFSA.txt")
-
-
-    eps_alpha = gm_alph.base.copy()
-    eps_alpha.append("_")
-    test_alphabet = FSA.alphabet(len(eps_alpha), eps_alpha, "identifiers")
-
-    #find initial state
-    init_state= {1}
-    test_state_list = [init_state]
-    test_state_done = [False]
-    #The intial state is always an accept state since we are not checking the 
-    #pairs (_, x) for x in X
-    if iLetter == 0:
-        test_acc_states = [{1}]
-    else:
-        test_acc_states = []
-    #print(eps_alpha)
-    if verbose ==True:
-        g = open(file_dir+"projection_test.txt", "w")
-    test_table=[]
-    #find the transition table for the projection onto the first coordinate
-    for iRow in range(len(new_t)):
-        temp_row = []
-        for iFirstLetter in range(len(gm_alph.base)+1):
-            new_st = set()
-            for iSecondLetter in range(len(gm_alph.base)+1):
-                alpha_index = iFirstLetter*(len(gm_alph.base)+1)+iSecondLetter
-                if alpha_index != len(eps_alpha)*len(eps_alpha)-1:
-                    new_st.add(new_t[iRow][alpha_index])
-            new_st = FSA.rem_0(new_st)
-            temp_row.append(new_st)
-        test_table.append(temp_row)
-    print("test table info", len(test_table))
-    print("new test table", test_table)   
-    print("accept states", test_acc_states)
-    #define state object
-    test_states = FSA.states(len(test_state_list), [{1}], test_acc_states)
-    #define table object
-    test_table_object = FSA.table("non-det dense", test_table)
-    #define the ndfsa with epsilon transitions
-    test_ndfsa_with_eps = FSA.ndfsa(test_alphabet, test_states, test_table_object)
-    #make it an ndfsa without epsilon transitions
-    test_ndfsa = FSA.e_free_ndfsa(test_ndfsa_with_eps)
-    #make it a det fsa 
-    test_fsa = FSA.make_det(test_ndfsa)
-    #print out fsa file and compare the projection to the NF
-    projection_file = "proj1-GM-Letter-"+str(gm_states.label_numbers_pairs[iLetter][1])+"-"+str(k)+".txt"
-    test_fsa.print_fsa(file_dir + projection_file)
-    output = subprocess.run([kbmag_ftn_dir+"fsalequal", out_dir+gog.wa_file, file_dir+projection_file])
-    print("fsaequal output for "+ str(gm_states.label_numbers_pairs[iLetter][1])+": "+ str(output.returncode))
-    if output.returncode != 0:
-        print("k will now be increased")
-        break #break out of the for loop for checking the letters, we know k is too small
 
 def draft_multiplier(k, gm_alph, gog, file_dir, kbmag_ftn_dir, out_dir, verbose):
     
@@ -760,10 +707,10 @@ def draft_multiplier(k, gm_alph, gog, file_dir, kbmag_ftn_dir, out_dir, verbose)
     print("**************************************************")
     if verbose ==True:
         f = open(file_dir+"transition_test.txt", "w")
-        # build transition function and state list
-        # only add accessible states to the list of states
-        new_t = []
-        IsAcceptState = False
+    # build transition function and state list
+    # only add accessible states to the list of states
+    new_t = []
+    IsAcceptState = False
     while False in state_done:
         new_row = []
         index = state_done.index(False)

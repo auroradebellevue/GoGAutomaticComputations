@@ -1,4 +1,4 @@
-_RWS.wa_star := rec(
+_RWS.mult_star := rec(
            isFSA := true,
         alphabet := rec(
                 type := "identifiers",
