@@ -476,16 +476,13 @@ def new_bdd_wd(mid_wd, ltr_pair, vfile, kbmag_ftn_dir, file_dir):
 def testMultiplier(testFSA, fsaString, goalWAString, file_dir, kbmag_ftn_dir, out_dir):
     #This function tests if the projection of the multiplier for fsaString 
     #matches the goalWA
+    print("Test multiplier for ", fsaString)
+    testFSA.print_fsa("testingTestMultiplier" + fsaString + ".txt")
     eps_alpha = testFSA.alphabet.base.copy()
     eps_alpha.append("_")
     letter_alphabet = FSA.alphabet(len(eps_alpha), eps_alpha, "identifiers")
-    #find initial state
-    if fsaString == 'IdWord':
-        init_state = {1}
-    else:
-        init_state = {}
-    #The intial state is always an accept state since we are not checking the 
-    #pairs (_, x) for x in X
+    #The intial state {1} is always an accept state since we are
+    #trying to accept the pairs (_, x) for x in X
     test_acc_states = [{1}]
 
     test_table=[]
@@ -497,19 +494,31 @@ def testMultiplier(testFSA, fsaString, goalWAString, file_dir, kbmag_ftn_dir, ou
             new_st = set()
             for iSecondLetter in range(len(testFSA.alphabet.base)+1):
                 alpha_index = iFirstLetter*(len(testFSA.alphabet.base)+1)+iSecondLetter
+                #print("letter index testing.")
+                #print("first letter: ", iFirstLetter, " second letter: ", iSecondLetter)
+                #print("alphabet index: ", alpha_index)
                 if alpha_index != len(eps_alpha)*len(eps_alpha)-1:
                     new_st.add(testFSA.table.transitions[iRow][alpha_index])
             new_st = FSA.rem_0(new_st)
+            
             #check if it's an accept state
             for iState in new_st:
                 if iState not in testFSA.states.accepting:
                     isAcceptState = False
+            if new_st != {0}:
+                print("state: ", new_st, "isAccept: ", isAcceptState)
+                print("check if statement1: ", new_st not in test_acc_states)
             if isAcceptState == True:
-                test_acc_states.append(new_st)
+                #check if in accept state list
+                if new_st not in test_acc_states:
+                    test_acc_states.append(new_st)
             #reset to True
             isAcceptState = True
             temp_row.append(new_st)
         test_table.append(temp_row)
+    print("test table info", len(test_table))
+    print("new test table", test_table)   
+    print("accept states", test_acc_states)
     #define state object
     letter_states = FSA.states(len(test_table), [{1}], test_acc_states)
     #define table object
@@ -610,10 +619,11 @@ def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
     
     k=0
     #start the while loop for increasing k
+    #while k < 4:
     while False in letter_TF_list:
         tempFSA = draft_multiplier(k, gm_alph, gog, file_dir, kbmag_ftn_dir, out_dir, verbose)
+        tempFSA.print_fsa(file_dir + "gmFellowConstant"+str(k)+".txt")
         generalMultiplierList.append(tempFSA)
-        print("tempFSA number pairs: ", tempFSA.states.label_numbers_pairs)
         for index in range(len(letter_TF_list)):
             if letter_TF_list[index] == False:
                 if index < len(tempFSA.states.label_numbers_pairs):
@@ -623,8 +633,10 @@ def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
                             acceptingForLetter.append(tempFSA.states.label_states_pairs[iState][0])
                     tempFSA = FSA.fsa(generalMultiplierList[k].alphabet, generalMultiplierList[k].states, generalMultiplierList[k].table)
                     tempFSA.states.accepting = acceptingForLetter
+                    print("Test for the letter ", multiplierLetters[index])
                     print("temp FSA accepting", tempFSA.states.accepting)
                     print("general multiplier accepting", generalMultiplierList[k].states.accepting)
+                    
                     testResult = testMultiplier(tempFSA, multiplierLetters[index], gog.wa_file, file_dir, kbmag_ftn_dir, out_dir)
                     print("Test result for the letter: ", multiplierLetters[index], testResult)
                     if testResult == 0:

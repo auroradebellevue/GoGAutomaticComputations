@@ -45,6 +45,8 @@ def testMultiplier(testFSA, fsaString):
                     isAcceptState = False
             if isAcceptState == True:
                 test_acc_states.append(new_st)
+            #print("state: ", new_st, "isAccept: ", isAcceptState)
+            #print("check if statement1: ", new_st not in test_acc_states)
             #reset to True
             isAcceptState = True
             temp_row.append(new_st)
@@ -53,7 +55,7 @@ def testMultiplier(testFSA, fsaString):
 
     #print("test table info", len(test_table))
     #print("new test table", test_table)   
-    #print("accept states", test_acc_states)
+    print("accept states", test_acc_states)
     #define state object
     letter_states = FSA.states(len(test_table), [{1}], test_acc_states)
     #define table object
