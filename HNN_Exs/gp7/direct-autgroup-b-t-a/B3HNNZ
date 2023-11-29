@@ -1,0 +1,12 @@
+# B(3) HNN over Z 
+_RWS := rec(
+  isRWS := true,
+  ordering := "shortlex",
+  generatorOrder := [b, B, t, T, a, A],
+  inverses := [B, b, T, t, A, a],
+  equations := [
+  [b*a*b, a*b*a ],
+  [t*a, b*t]
+  ]
+
+);
