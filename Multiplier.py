@@ -500,6 +500,94 @@ def find_k(gog, travel_info, file_dir, kbmag_ftn_dir, verbose):
         M = k4*k4 + k4*n1
     return M
 
+def verifyGM(gog, file_dir, kbmag_ftn_dir, out_dir):
+    isValidated = [2] #start with a 2 to enter the while loop
+    travel_info = []
+    travel_info.append(0) #start at 0 
+    while 2 in isValidated:
+        #reset isValidated
+        isValidated.clear()
+        #increase k value
+        travel_info[0] = travel_info[0] + 1
+        #reset gog.mult_list
+        gog.mult_list.clear()
+        print("***********************************\n\n")
+        print("attempting multiplier building using k-fellow traveling constant ", travel_info[0])
+        gog.gm = make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, False)
+        print("Now testing the prospective multipliers")
+        print("gog.mult_list test", len(gog.mult_list))
+        for iLetter in range(len(gog.mult_list)):
+            testFSA = gog.mult_list[iLetter][1]
+            fsaString = gog.mult_list[iLetter][0]
+            testFSA.print_fsa(out_dir + "fsaminLetter_" + fsaString + ".txt")
+            returnCode = testMultiplier(testFSA, fsaString, out_dir + gog.wa_file, file_dir, kbmag_ftn_dir)
+            isValidated.append(returnCode)
+        print("Validation list (0 is true, 2 is false): ", isValidated, "\n\n")
+    return travel_info[0]
+        
+        
+def testMultiplier(testFSA, fsaString, WA_file, file_dir, kbmag_ftn_dir):
+    eps_alpha = testFSA.alphabet.base.copy()
+    eps_alpha.append("_")
+    letter_alphabet = FSA.alphabet(len(eps_alpha), eps_alpha, "identifiers")
+    #find initial state
+    if fsaString == 'IdWord':
+        init_state = {1}
+    else:
+        init_state = {}
+    #The intial state is always an accept state since we are not checking the 
+    #pairs (_, x) for x in X
+    test_acc_states = [{1}]
+
+    test_table=[]
+    isAcceptState = True
+    #find the transition table for the projection onto the first coordinate
+    for iRow in range(len(testFSA.table.transitions)):
+        temp_row = []
+        for iFirstLetter in range(len(testFSA.alphabet.base)+1):
+            new_st = set()
+            for iSecondLetter in range(len(testFSA.alphabet.base)+1):
+                alpha_index = iFirstLetter*(len(testFSA.alphabet.base)+1)+iSecondLetter
+                if alpha_index != len(eps_alpha)*len(eps_alpha)-1:
+                    new_st.add(testFSA.table.transitions[iRow][alpha_index])
+            new_st = FSA.rem_0(new_st)
+            #check if it's an accept state
+            for iState in new_st:
+                if iState not in testFSA.states.accepting:
+                    isAcceptState = False
+            if isAcceptState == True:
+                test_acc_states.append(new_st)
+            #print("state: ", new_st, "isAccept: ", isAcceptState)
+            #print("check if statement1: ", new_st not in test_acc_states)
+            #reset to True
+            isAcceptState = True
+            temp_row.append(new_st)
+        test_table.append(temp_row)
+
+
+    #print("test table info", len(test_table))
+    #print("new test table", test_table)   
+    print("accept states", test_acc_states)
+    #define state object
+    letter_states = FSA.states(len(test_table), [{1}], test_acc_states)
+    #define table object
+    letter_table_object = FSA.table("non-det dense", test_table)
+    #define the ndfsa with epsilon transitions
+    letter_ndfsa_with_eps = FSA.ndfsa(letter_alphabet, letter_states, letter_table_object)
+    #make it an ndfsa without epsilon transitions
+    letter_ndfsa = FSA.e_free_ndfsa(letter_ndfsa_with_eps)
+    #make it a det fsa 
+    letter_fsa = FSA.make_det(letter_ndfsa)
+    #print("final table", letter_fsa.table.transitions)
+    #print("final state list", letter_fsa.states.size)
+    #print("final accept states", letter_fsa.states.accepting)
+    #print out fsa file and compare the projection to the NF
+    projection_file = "proj1-Letter-"+fsaString
+    letter_fsa.print_fsa(file_dir + projection_file)
+    output = subprocess.run([kbmag_ftn_dir+"fsalequal", WA_file, file_dir+projection_file])
+    print("fsaequal output for letter: "+fsaString+" "+ str(output.returncode)+ "\n")  
+    return output.returncode   
+    
 def make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, verbose):
     # vertex group general multiplier and edge group coset general multipliers
     # We need the aut struct of v0 and the coset aut structure for every

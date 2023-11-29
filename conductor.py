@@ -187,13 +187,9 @@ def main(argv):
     """
     
     #Multiplier Automaton
+    fellowTravelingConstant = Multiplier.verifyGM(gog, file_dir, kbmag_ftn_dir, out_dir)
     print("***********************************\n\n")
-    print("attempting multiplier building")
-    gog.gm=Multiplier.make_gm(gog, travel_info, file_dir, kbmag_ftn_dir, out_dir, False)
-    for iLetter in range(len(gog.mult_list)):
-        gog.mult_list[iLetter][1].print_fsa(out_dir+"fsaminLetter_"+gog.mult_list[iLetter][0]+".txt")
-    print("***********************************\n\n")
-    print("The automatic structure is built. The files are called Pi1GraphofGroupsWordAcceptor.wa and fsaminLetter_***.txt")
+    print("The automatic structure is built using", fellowTravelingConstant, " for the fellow traveling constant. The files are called Pi1GraphofGroupsWordAcceptor.wa and fsaminLetter_***.txt")
     print("***********************************\n\n")
 if __name__=="__main__":
     main(sys.argv[1:]) #the first argument is the python script
