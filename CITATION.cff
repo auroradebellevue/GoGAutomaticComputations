@@ -10,6 +10,11 @@ type: software
 authors:
   - given-names: Aurora
     family-names: DeBellevue
+identifiers:
+  - type: url
+    value: >-
+      https://github.com/auroradebellevue/GoGAutomaticComputations
 repository-code: >-
   https://github.com/auroradebellevue/GoGAutomaticComputations
+
 
