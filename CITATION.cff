@@ -1,8 +1,15 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+title: GoGAutomaticComputations
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
 authors:
-  - family-names: DeBellevue
-    given-names: Aurora
-title: "GoGAutomaticComputations"
-version: 1.0
-date-released: 2023-11-30
+  - given-names: Aurora
+    family-names: DeBellevue
+repository-code: >-
+  https://github.com/auroradebellevue/GoGAutomaticComputations
+
