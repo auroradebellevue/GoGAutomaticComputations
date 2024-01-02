@@ -7,4 +7,4 @@ To run the code, open a terminal to the folder GoGAutomaticComputations.
 Then use the command:
 python3 ./conductor.py "absolute directory to group folder" "absolute directory to kbmag standalone bin folder"
 
-The  
+The  output of the code will be put into the "current working forlder" /output. Old output will be overwritten.
